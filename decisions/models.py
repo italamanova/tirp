@@ -209,7 +209,7 @@ class PairCompare(models.Model):
         verbose_name="LPR"
     )
     result = models.CharField(
-        max_length=2,
+        max_length=100,
         null=True
     )
 

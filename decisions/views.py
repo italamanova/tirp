@@ -1,19 +1,21 @@
 import itertools
-from operator import attrgetter
 from collections import defaultdict
+from operator import attrgetter
 
+from django.core.checks import messages
+from django.db import DatabaseError
+from django.db.models import F
+from django.db.models import Max, Min
 from django.forms import formset_factory
 from django.shortcuts import render, redirect
-from django.views.generic.list import ListView
+from django.urls import reverse_lazy
 from django.views.generic import DetailView, UpdateView, CreateView, DeleteView, View
-from django.urls import reverse_lazy, reverse
-from django.db.models import Max, Min
-from django.db.models import F
+from django.views.generic.list import ListView
 
-from decisions.models import Alternative, LPR, Result, Criteria, Mark, Vector, PairCompare, LPRCompare
-from decisions.forms import CreateVectorForm, UpdateVectorForm, LPRCriteriasForm, AlternativeSelectionForm, \
-    LPRCompareForm, AltCompareForm, BaseCompareFormSet
 from decisions.filters import VectorFilter
+from decisions.forms import CreateVectorForm, UpdateVectorForm, LPRCriteriasForm, AlternativeSelectionForm, \
+    LPRCompareForm, AltCompareForm
+from decisions.models import Alternative, LPR, Result, Criteria, Mark, Vector, PairCompare, LPRCompare
 
 
 ################
@@ -680,6 +682,7 @@ def get_lpr_results(request):
 
 
 def alt_compare(request, pk_lpr):
+    obj_lpr = LPR.objects.get(id=pk_lpr)
     pair_compares = PairCompare.objects.filter(lpr=LPR.objects.get(id=pk_lpr))
     alternatives = Alternative.objects.all()
     results = []
@@ -695,10 +698,21 @@ def alt_compare(request, pk_lpr):
                         'second_alternative': x['second']
                         } for x in compare_list]
     _formset = CompareFormSet(initial=formset_initial, prefix='compare')
-    print(formset_initial)
 
     if request.method == "POST":
-        pass
+        print(_formset.is_valid())
+        if _formset.is_valid():
+            for form in _formset:
+                if form.is_valid():
+                    try:
+                        PairCompare.objects.update_or_create(first_alternative=form.first_alternative,
+                                                             second_alternative=form.second_alternative,
+                                                             lpr=obj_lpr,
+                                                             result=form.cleaned_data.compare)
+                    except DatabaseError:
+                        messages.error(request, "Database error. Please try again")
+
+            return redirect('alternative-list')
 
     return render(request, 'incidence/decisions/alt_compare.html', {
         "_form": form,

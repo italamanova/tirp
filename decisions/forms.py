@@ -203,28 +203,6 @@ class AltCompareForm(forms.Form):
         self.first_alternative = kwargs.get('initial', {}).get('first_alternative', None)
         self.second_alternative = kwargs.get('initial', {}).get('second_alternative', None)
 
-        print('kwargs1', kwargs)
-        # self.first_vector = Alternative.objects.get(id=self.first_alternative.id).vector_set.all()
-        # self.second_vector = Alternative.objects.get(id=self.second_alternative.id).vector_set.all()
-
-
-class BaseCompareFormSet(BaseFormSet):
-
-    def __init__(self, *args, **kwargs):
-        self.compare_list = kwargs.pop('compare_list')
-
-        super(BaseCompareFormSet, self).__init__(*args, **kwargs)
-
-    def _construct_forms(self, **kwargs):
-        self.forms = []
-        for i in range(self.total_form_count()):
-            compare_values = self.compare_list[i]
-            self.forms.append(self._construct_form(i, request=self.request,
-                                                   first_alternative=compare_values['first'],
-                                                   second_alternative=compare_values['second'],
-                                                   **kwargs))
-
-    # def _construct_form(self, *args, **kwargs):
-    #     # inject user in each form on the formset
-    #     kwargs['user'] = self.user
-    #     return super(AddToBasketFormSet, self)._construct_form(*args, **kwargs)
+        if self.first_alternative:
+            self.first_vector = Alternative.objects.get(id=self.first_alternative.id).vector_set.all()
+            self.second_vector = Alternative.objects.get(id=self.second_alternative.id).vector_set.all()
