@@ -5,13 +5,15 @@ from django_filters.views import FilterView
 
 from decisions.models import Mark, Alternative, Vector, Result
 from decisions.views import AlternativeListView, AlternativeCreateView, AlternativeDeleteView, AlternativeUpdateView, \
-    alt_compare
+    alt_compare, create_incidence_matrix
 from decisions.views import CriteriaListView, CriteriaCreateView, CriteriaDeleteView, CriteriaUpdateView
 from decisions.views import LPRListView, LPRDetailView, LPRCreateView, LPRDeleteView, LPRUpdateView
 from decisions.views import MarkListView, MarkDetailView, MarkCreateView, MarkDeleteView, MarkUpdateView
-from decisions.views import VectorListView, VectorDetailView, VectorCreateView, VectorDeleteView, VectorUpdateView, create_vectors, list_vectors
+from decisions.views import VectorListView, VectorDetailView, VectorCreateView, VectorDeleteView, VectorUpdateView, \
+    create_vectors, list_vectors
 from decisions.views import ResultListView, ResultDetailView, ResultCreateView, ResultDeleteView, ResultUpdateView
-from decisions.views import RankCriteriaView, select_alternative_to_compare, compare_alternatives, get_result_matrix, get_group_results, compare_lprs, get_lpr_results
+from decisions.views import RankCriteriaView, select_alternative_to_compare, compare_alternatives, get_result_matrix, \
+    get_group_results, compare_lprs, get_lpr_results
 
 urlpatterns = [
     url(
@@ -34,9 +36,6 @@ urlpatterns = [
         login_required(AlternativeDeleteView.as_view()),
         name="alternative-delete"
     ),
-
-
-
 
     url(
         r'^lprs/$',
@@ -63,8 +62,6 @@ urlpatterns = [
         login_required(LPRDeleteView.as_view()),
         name="lpr-delete"
     ),
-
-
 
     # VectorListView.as_view()
     url(
@@ -93,9 +90,6 @@ urlpatterns = [
         name="vector-delete"
     ),
 
-
-
-
     url(
         r'^marks/$',
         login_required(FilterView.as_view(model=Mark, filter_fields=('criteria',))),
@@ -122,9 +116,6 @@ urlpatterns = [
         name="mark-delete"
     ),
 
-
-
-
     url(
         r'^criterias/$',
         login_required(CriteriaListView.as_view()),
@@ -145,8 +136,6 @@ urlpatterns = [
         login_required(CriteriaDeleteView.as_view()),
         name="criteria-delete"
     ),
-
-
 
     # ResultListView.as_view()
     url(
@@ -175,9 +164,6 @@ urlpatterns = [
         name="result-delete"
     ),
 
-
-
-
     # comparing criterias
     url(
         r'^lprs/(?P<pk_lpr>[^/]+)/smart/$',
@@ -200,14 +186,20 @@ urlpatterns = [
         name="get-results"
     ),
 
+
+    # incidence
+
     url(
-        r'^lprs/(?P<pk_lpr>[^/]+)/incidence/$',
+        r'^lprs/(?P<pk_lpr>[^/]+)/alt_compare/$',
         login_required(alt_compare),
         name="start-incidence"
     ),
 
-
-
+    url(
+        r'^lprs/(?P<pk_lpr>[^/]+)/incidence/$',
+        login_required(create_incidence_matrix),
+        name="incidence-matrix"
+    ),
 
     # group results
     url(

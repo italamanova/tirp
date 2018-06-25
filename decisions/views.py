@@ -17,6 +17,8 @@ from decisions.forms import CreateVectorForm, UpdateVectorForm, LPRCriteriasForm
     LPRCompareForm, AltCompareForm
 from decisions.models import Alternative, LPR, Result, Criteria, Mark, Vector, PairCompare, LPRCompare
 
+import networkx as nx
+
 
 ################
 # Alternatives #
@@ -697,10 +699,14 @@ def alt_compare(request, pk_lpr):
         pair_initial = {'first_alternative': item['first'],
                         'second_alternative': item['second']
                         }
-        pair = pair_compares.get(
-            first_alternative=item['first'],
-            second_alternative=item['second']
-        )
+        try:
+            pair = pair_compares.get(
+                first_alternative=item['first'],
+                second_alternative=item['second']
+            )
+        except PairCompare.DoesNotExist:
+            pair = None
+
         if pair:
             pair_initial['compare'] = pair.result
         formset_initial.append(pair_initial)
@@ -729,5 +735,54 @@ def alt_compare(request, pk_lpr):
     })
 
 
-def get_incidence_matrix(request, pk_lpr):
-    pass
+def create_incidence_matrix(request, pk_lpr):
+    obj_lpr = LPR.objects.get(id=pk_lpr)
+    pair_compares = PairCompare.objects.filter(lpr=LPR.objects.get(id=pk_lpr))
+    alternatives = Alternative.objects.all()
+    len_alternatives = len(alternatives)
+
+    nodes_dict = {}
+    nodes = []
+    edges = []
+    result = []
+
+    for i in range(0, len_alternatives):
+        nodes.append(i)
+        nodes_dict[alternatives[i].name] = i
+
+    inv_nodes_dict = {v: k for k, v in nodes_dict.items()}
+
+    print(nodes_dict)
+
+    for pair in pair_compares:
+        node1 = nodes_dict[pair.first_alternative.name]
+        node2 = nodes_dict[pair.second_alternative.name]
+        if pair.result == '>':
+            edges.append([node1, node2])
+        if pair.result == '<':
+            edges.append([node2, node1])
+        if pair.result == '=':
+            edges.append([node1, node2])
+            edges.append([node2, node1])
+
+    print(edges)
+
+    G = nx.DiGraph()
+    G.add_nodes_from(nodes)
+    G.add_edges_from(edges)
+
+    incidence_matrix = -nx.incidence_matrix(G, oriented=True)  # this returns a scipy sparse matrix
+
+    array_incidence_matrix = incidence_matrix.toarray()
+
+    for number in range(0, len(array_incidence_matrix)):
+        row = array_incidence_matrix[number]
+        if all(i >= 0 for i in row):
+            result.append(inv_nodes_dict[number])
+
+    return render(request, 'incidence/decisions/incidence_matrix.html', {
+        'incidence_matrix': array_incidence_matrix,
+        'nodes_dict': inv_nodes_dict,
+        'result': result,
+        'lpr': LPR.objects.get(id=pk_lpr)
+    })

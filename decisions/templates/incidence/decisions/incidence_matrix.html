@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block head %}
+    <title>Incidence matrix</title>
+{% endblock %}
+
+{% block body %}
+    <form method="post">
+        {% csrf_token %}
+        <h2>{{ lpr }}</h2>
+
+        <br>
+
+        Incidence matrix:<br>
+        <table style="width:100%; border: 1px solid black;">
+            {% for row in incidence_matrix %}
+                <tr style="width:100%; border: 1px solid black;">
+
+                {% for cell in row %}
+                    <td style="border: 1px solid black;text-align: center;">{{ cell }}</td>
+                {% endfor %}
+
+            {% endfor %}
+        </table>
+
+        <br>
+
+        {% for k, v in nodes_dict.items %}
+            <br>{{ k }} - {{ v }}
+        {% endfor %}
+
+        <br>
+        <br>
+        Pareto best items:
+        {% for i in result %}
+            <br>{{ i }},
+        {% endfor %}
+
+{% endblock %}

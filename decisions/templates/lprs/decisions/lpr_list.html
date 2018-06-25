@@ -25,8 +25,8 @@
                         {{ lpr.name }}
                     </td>
                     <td>
-                       <a href="{% url 'compare-lprs' lpr.id %}">Compare LPR</a> | <a href="{% url 'get-results' lpr.id %}">Pairs</a> | <a href="{% url 'start-smart' lpr.id %}">SMART</a> | <a href="{% url 'lpr-update' lpr.id %}">Update</a> | <a href="{% url 'lpr-delete' lpr.id %}">Delete</a>
-                        | <a href="{% url 'start-incidence' lpr.id %}">Compare alternatives</a>
+                       <a href="{% url 'compare-lprs' lpr.id %}">Compare LPR</a> | <a href="{% url 'lpr-update' lpr.id %}">Update</a> | <a href="{% url 'lpr-delete' lpr.id %}">Delete</a>
+                        | <a href="{% url 'start-incidence' lpr.id %}">Compare alternatives</a> | <a href="{% url 'incidence-matrix' lpr.id %}">Incidence matrix</a>
                     </td>
                 </tr>                	
             {% empty %}
