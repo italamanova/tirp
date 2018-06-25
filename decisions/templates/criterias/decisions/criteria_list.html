@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Criterias</title>
+{% endblock %}
+
+{% block body %}
+
+    <h3>
+    	Criterias
+		[<a href="{% url 'criteria-create' %}">Add</a>]
+    </h3>
+    <table class="table">
+        <thead>
+            <th scope="col">Rank</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+            <th scope="col">Optimal value</th>
+            <th scope="col">Measure</th>
+            <th scope="col">Scale type</th>
+            <th scope="col">Operations</th>
+        </thead>
+        <tbody>
+            {% for criteria in object_list %}
+                <tr>
+                    <td>
+                        {{ criteria.rank }}
+                    </td>
+                    <td>
+                        {{ criteria.name }}
+                    </td>
+                    <td>
+                        {{ criteria.criteria_type }}
+                    </td>
+                    <td>
+                        {{ criteria.optimal_type }}
+                    </td>
+                    <td>
+                        {{ criteria.measure }}
+                    </td>
+                    <td>
+                        {{ criteria.scale_type }}
+                    </td>
+                    <td>
+                       <a href="{% url 'criteria-update' criteria.id %}">Update</a> | <a href="{% url 'criteria-delete' criteria.id %}">Delete</a>
+                    </td>
+                </tr>
+            {% empty %}
+                No criterias yet.
+            {% endfor %}        
+        </tbody>
+    </table>
+{% endblock %}

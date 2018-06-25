@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block head %}
+    <title>Diff alternatives</title>
+{% endblock %}
+
+{% block body %}
+    <form method="post">
+        {% csrf_token %}
+        <h2>{{ lpr }}</h2>
+        {{ formset.management_form }}
+        {% for form in formset %}
+
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>{{ form.first_alternative.name }}</th>
+                    <th></th>
+                    <th>{{ form.second_alternative.name }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Criteria</th>
+                                <th>Mark</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for vector in form.first_vector %}
+                                <tr>
+                                    <td>{{ vector.get_mark_criteria }}</td>
+                                    <td>{{ vector.mark }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                    <td>
+                        {% for field in form.visible_fields %}
+                            {{ field }}
+                        {% endfor %}
+                    </td>
+
+                    <td>
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Criteria</th>
+                                <th>Mark</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for vector in form.second_vector %}
+                                <tr>
+                                    <td>{{ vector.get_mark_criteria }}</td>
+                                    <td>{{ vector.mark }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        {% endfor %}
+
+        <br>
+        <button type="submit">Submit</button>
+
+    </form>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block head %}
+    <title>Pair results</title>
+{% endblock %}
+
+{% block body %}
+  <form method="post">
+    {% csrf_token %}
+    {{ lpr }}
+    <table class="table">
+        <thead>
+                <th scope="col">LPR</th>
+            {% for lpr in lprs %}
+                <th scope="col">{{ lpr }}</th>
+            {% endfor %}
+        </thead>
+        <tbody>
+            {% for lpr, results in lpr_lists.items %}
+                <tr>
+                        <td>
+                            <b>{{ lpr }}</b>
+                        </td>
+
+                        {% for result in results %}
+                            <td>
+                                {{ result.result }}
+                            </td>
+                        {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <br>
+    <br>
+    <table class="table">
+        <thead>
+                <th scope="col">SUM</th>
+                <th scope="col">Multiplied 5 times at result</th>
+                <th scope="col">Normalised results (*100)</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    {% for lpr, plus in lpr_results.items %}
+                        <p>{{ lpr }}: {{ plus }}</p>
+                    {% endfor %}
+                </td>
+
+                <td>
+                    {% for lpr, plus in plus_results.items %}
+                        <p>{{ lpr }}: {{ plus }}</p>
+                    {% endfor %}
+                </td>
+
+                <td>
+                    {% for lpr, plus in nor_results.items %}
+                        <p>{{ lpr }}: {{ plus }}</p>
+                    {% endfor %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+  </form>
+{% endblock %}

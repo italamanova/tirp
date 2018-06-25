@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block head %}
+    <title>Select alternatives</title>
+{% endblock %}
+
+{% block body %}
+  <form method="post">
+    {% csrf_token %}
+    {{ lpr }}
+    <table class="table">
+        <tbody>
+            <tr>
+                {% for field in form.visible_fields %}
+                <td> {{ field|add_class:'form-control' }} </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+    <center>
+        <a href="{% url 'lpr-list' %}" class="btn btn-outline-dark">Back</a>
+        <input type="submit" class="btn btn-outline-dark" value="Select alternatives" />
+    </center>
+  </form>
+{% endblock %}

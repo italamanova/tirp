@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Marks</title>
+{% endblock %}
+
+{% block body %}
+
+    <h3>
+    	Marks
+		[<a href="{% url 'mark-create' %}">Add</a>]
+    </h3>
+    <form action="" method="get">
+        {{ filter.form.as_p }}
+        <input type="submit" />
+    </form>
+    <table class="table">
+        <thead>
+            <th scope="col">Rank</th>
+            <th scope="col">Criteria</th>
+            <th scope="col">Name</th>
+            <th scope="col">Numeric value</th>
+            <th scope="col">Normalized mark</th>
+            <th scope="col">Operations</th>
+        </thead>
+        <tbody>
+            {% for mark in filter.qs %}
+                <tr>
+                    <td>
+                        {{ mark.rank }}
+                    </td>
+                    <td>
+                        {{ mark.criteria }}
+                    </td>
+                    <td>
+                        {{ mark.name }} {{ mark.criteria.measure }}
+                    </td>                    
+                    <td>
+                        {{ mark.numeric_value }}
+                    </td>                
+                    <td>
+                        {{ mark.normalized_mark }}
+                    </td>                    
+                    <td>
+                        <a href="{% url 'mark-update' mark.id %}">Update</a> | <a href="{% url 'mark-delete' mark.id %}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block head %}
+    <title>Diff alternatives</title>
+{% endblock %}
+
+{% block body %}
+  <form method="post">
+    {% csrf_token %}
+    {{ lpr }}
+    <table class="table">
+        <thead>
+            <th scope="col"></th>
+            <th scope="col">{{ first_alternative }}</th>
+            <th scope="col">{{ second_alternative }}</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <b>Advantages</b>
+                </td>
+                <td>
+                    <table class="table">
+                        <tbody>
+                            {% for fp in first_plus %}
+                                <tr>
+                                    <td>
+                                        <a href="#fp-{{ fp.alternative.id }}-{{ fp.mark.id }}" data-toggle="collapse">-</a>
+                                        <div id="fp-{{ fp.alternative.id }}-{{ fp.mark.id }}" class="collapse show">{{ fp }}</div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>                    
+                </td>
+                <td>
+                    <table class="table">
+                        <tbody>      
+                            {% for fp in second_plus %}
+                                <tr>
+                                    <td>
+                                        <a href="#fp-{{ fp.alternative.id }}-{{ fp.mark.id }}" data-toggle="collapse">-</a>
+                                        <div id="fp-{{ fp.alternative.id }}-{{ fp.mark.id }}" class="collapse show">{{ fp }}</div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Limitations</b>
+                </td>
+                <td>
+                    <table class="table">
+                        <tbody>
+                            {% for fp in first_minus %}
+                                <tr>
+                                    <td>
+                                        <a href="#fp-{{ fp.alternative.id }}-{{ fp.mark.id }}" data-toggle="collapse">-</a>
+                                        <div id="fp-{{ fp.alternative.id }}-{{ fp.mark.id }}" class="collapse show">{{ fp }}</div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>           
+
+                </td>
+                <td>
+                    <table class="table">
+                        <tbody>
+                            {% for fp in second_minus %}
+                                <tr>
+                                    <td>
+                                        <a href="#fp-{{ fp.alternative.id }}-{{ fp.mark.id }}" data-toggle="collapse">-</a>
+                                        <div id="fp-{{ fp.alternative.id }}-{{ fp.mark.id }}" class="collapse show">{{ fp }}</div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>      
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <center>
+                        <input type="submit" class="btn btn-outline-dark" name="{{ first_alternative }}" value="Choose {{ first_alternative }}" />
+                    </center>
+                </td>
+                <td>
+                    <center>
+                        <input type="submit" class="btn btn-outline-dark"  name="{{ second_alternative }}" value="Choose {{ second_alternative }}" />
+                    </center>
+                </td>
+            </tr>
+                <td>
+                </td>
+                <td colspan="2">
+                    <center>
+                        <input type="submit" class="btn btn-outline-dark" name="Choose both" value="Choose both" />
+                    </center>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+  </form>
+{% endblock %}

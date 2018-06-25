@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Vectors</title>
+{% endblock %}
+
+{% block body %}
+    <h3>
+    	Vectors
+		[<a href="{% url 'vector-create' %}">Add</a>]
+    </h3>
+    <form action="" method="get">
+        {{ filter.form.as_p }}
+        <input type="submit" />
+    </form>
+    {% regroup filter.qs by alternative as vectors_by_alternative %}
+    {% for alternative in vectors_by_alternative %}
+            <b>
+                {{ alternative.grouper }}
+            </b>
+            [<a href="{% url 'vector-update' alternative.grouper.id %}">Update</a>]
+            <table class="table">
+                <tbody>
+                    {% for vector in alternative.list %}
+                        <tr>
+                            <td>
+                                {{ vector.mark.criteria }}
+                            </td>
+                            <td>
+                                {{ vector.mark }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+    {% endfor %}
+
+{% endblock %}

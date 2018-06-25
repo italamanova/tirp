@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Results</title>
+{% endblock %}
+
+{% block body %}
+
+    <h3>
+    	Results
+		[<a href="{% url 'result-create' %}">Add</a>]
+    </h3>
+    <form action="" method="get">
+        {{ filter.form.as_p }}
+        <input type="submit" />
+    </form>
+    <table class="table">
+        <thead>
+            <th scope="col">Rank</th>
+            <th scope="col">LPR</th>
+            <th scope="col">Alternative</th>
+            <th scope="col">Weight</th>
+            <th scope="col">Operations</th>
+        </thead>
+        <tbody>
+            {% for result in filter.qs %}
+                <tr>
+                    <td>
+                        {{ result.rank }}
+                    </td>
+                    <td>
+                        {{ result.lpr }}
+                    </td>
+                    <td>
+                        {{ result.alternative }}
+                    </td>
+                    <td>
+                        {{ result.alternative_weight }}
+                    </td>
+                    <td>
+                        <a href="{% url 'result-update' result.id %}">Update</a> | <a href="{% url 'result-delete' result.id %}">Delete</a>
+                    </td>
+                </tr>
+            {% empty %}
+                No results yet.
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

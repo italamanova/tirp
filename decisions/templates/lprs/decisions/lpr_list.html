@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>LPRs</title>
+{% endblock %}
+
+{% block body %}
+
+    <h3>
+    	LPRs
+		[<a href="{% url 'lpr-create' %}">Add</a>]
+    </h3>
+    <table class="table">
+        <thead>
+            <th scope="col">Rank</th>
+            <th scope="col">Name</th>
+            <th scope="col">Operations</th>
+        </thead>
+        <tbody>
+            {% for lpr in object_list %}
+                <tr>
+                    <td>
+                        {{ lpr.rank }}
+                    </td>
+                    <td>
+                        {{ lpr.name }}
+                    </td>
+                    <td>
+                       <a href="{% url 'compare-lprs' lpr.id %}">Compare LPR</a> | <a href="{% url 'get-results' lpr.id %}">Pairs</a> | <a href="{% url 'start-smart' lpr.id %}">SMART</a> | <a href="{% url 'lpr-update' lpr.id %}">Update</a> | <a href="{% url 'lpr-delete' lpr.id %}">Delete</a>
+                        | <a href="{% url 'start-incidence' lpr.id %}">Compare alternatives</a>
+                    </td>
+                </tr>                	
+            {% empty %}
+                No LPRs yet.
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

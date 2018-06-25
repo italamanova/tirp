@@ -1,0 +1,73 @@
+{% load static %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <!-- Bootstrap Core -->
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+
+    <script src={% static "js/bootstrap.min.js" %}></script>
+
+{% block head %}
+{% endblock %}
+</head>
+
+<body>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'login' %}">Home</a>
+        </li>
+        {% if request.user.is_authenticated %}
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'alternative-list' %}">Alternatives</a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'lpr-list' %}">LPRs</a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'vector-list' %}">Vectors</a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'mark-list' %}">Marks</a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'criteria-list' %}">Criterias</a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'result-list' %}">Results</a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'group-results' %}">Group results</a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'lpr-results' %}">LPR results</a>
+                </li>
+        {% endif %}
+    </ul>
+
+    {% if request.user.is_authenticated %}
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" >Hello, {{ request.user.username }}</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'logout' %}">[logout]</a>
+            </li>
+        </ul>
+    {% endif %}
+</nav>
+<div class="jumbotron">
+    <div class="container">
+
+    {% block body %}
+    {% endblock %}
+    </div>
+</div>
+</body>
+</html>

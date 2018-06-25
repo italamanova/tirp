@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block head %}
+    <title>(Re)Mark Criteria weights</title>
+{% endblock %}
+
+{% block body %}
+    <h3>
+    	(Re)Mark Criteria weights
+    </h3>
+    <form action="" method="post">
+        {% csrf_token %}
+
+        {% for hidden in form.hidden_fields %}
+  			{{ hidden }}
+		{% endfor %}
+
+        {% for field in form.visible_fields %}
+		    <div class="form-group">
+		        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+		        {{ field|add_class:'form-control' }}
+		        {% for error in field.errors %}
+		          <span class="help-block">{{ error }}</span>
+		        {% endfor %}
+		    </div>
+		{% endfor %}
+        <a href="{% url 'lpr-list' %}" class="btn btn-outline-dark">Back</a>
+        <input type="submit" class="btn btn-outline-dark" value="Normalize" />
+    </form>
+
+{% endblock %}

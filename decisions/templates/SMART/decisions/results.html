@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block head %}
+    <title>Pair results</title>
+{% endblock %}
+
+{% block body %}
+  <form method="post">
+    {% csrf_token %}
+    {{ lpr }}
+    <table class="table">
+        <thead>
+            <th scope="col"></th>
+            {% for alternative in alternatives %}
+                <th scope="col">{{ alternative }}</th>
+            {% endfor %}
+        </thead>
+        <tbody>
+            <tr>
+                {% for alt, list in listed_alts.items %}
+                    {% if alt in max_alternatives %}
+                        <tr class="table-bordered table-success">
+                            <td>
+                                <b>{{ alt }}</b>
+                            </td>
+                            {% for sign in list %}
+                            <td>
+                                {{ sign.result }}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td>
+                                <b>{{ alt }}</b>
+                            </td>
+                            {% for sign in list %}
+                            <td>
+                                {{ sign.result }}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+  </form>
+{% endblock %}

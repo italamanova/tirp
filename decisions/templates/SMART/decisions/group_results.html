@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block head %}
+    <title>Pair results</title>
+{% endblock %}
+
+{% block body %}
+  <form method="post">
+    {% csrf_token %}
+    {{ lpr }}
+    <table class="table">
+        <thead>
+                <th scope="col">Weight</th>
+            {% for lpr in lprs %}
+                <th scope="col">{{ lpr }} ({{ lpr.rank }})</th>
+            {% endfor %}
+        </thead>
+        <tbody>
+            {% for result, list in t_results.items %}
+                <tr>
+                        <td>
+                            <b>({{ result }})</b>
+                        </td>
+
+                        {% for sign, al in list.items %}
+                            <td>
+                                {% for a in al %}
+                                    {{ a }}{% if not forloop.last %},<br> {% endif %}
+                                {% endfor %}
+                            </td>
+                        {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% for alt, plus in alt_results.items %}
+    <p>{{ alt }}: {{ plus }}</p>
+    {% endfor %}
+  </form>
+{% endblock %}
