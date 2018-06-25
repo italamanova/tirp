@@ -190,9 +190,9 @@ class LPRCompareForm(forms.Form):
 
 class AltCompareForm(forms.Form):
     COMPARE_CHOICES = (
-        (1, _("Better")),
-        (2, _("Worse")),
-        (3, _("Equal"))
+        ('>', _("Better")),
+        ('<', _("Worse")),
+        ('=', _("Equal"))
     )
 
     compare = forms.ChoiceField(choices=COMPARE_CHOICES)

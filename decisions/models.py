@@ -216,6 +216,9 @@ class PairCompare(models.Model):
     def __str__(self):
         return '%s: %s %s %s' % (self.lpr, self.first_alternative, self.result, self.second_alternative)
 
+    class Meta:
+        unique_together = ('first_alternative', 'second_alternative', 'lpr')
+
 
 class LPRCompare(models.Model):
     master_lpr = models.ForeignKey(
@@ -237,4 +240,3 @@ class LPRCompare(models.Model):
 
     def __str__(self):
         return '%s: %s (%s)' % (self.master_lpr, self.target_lpr, self.result)
-

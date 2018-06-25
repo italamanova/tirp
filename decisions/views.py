@@ -685,37 +685,44 @@ def alt_compare(request, pk_lpr):
     obj_lpr = LPR.objects.get(id=pk_lpr)
     pair_compares = PairCompare.objects.filter(lpr=LPR.objects.get(id=pk_lpr))
     alternatives = Alternative.objects.all()
-    results = []
 
     compare_list = []
     for first_alternative, second_alternative in itertools.combinations(alternatives, 2):
         compare_list.append({'first': first_alternative, 'second': second_alternative})
 
-    form = AltCompareForm(initial={'first_alternative': alternatives[0],
-                                   'second_alternative': alternatives[1]})
     CompareFormSet = formset_factory(AltCompareForm)
-    formset_initial = [{'first_alternative': x['first'],
-                        'second_alternative': x['second']
-                        } for x in compare_list]
+
+    formset_initial = []
+    for item in compare_list:
+        pair_initial = {'first_alternative': item['first'],
+                        'second_alternative': item['second']
+                        }
+        pair = pair_compares.get(
+            first_alternative=item['first'],
+            second_alternative=item['second']
+        )
+        if pair:
+            pair_initial['compare'] = pair.result
+        formset_initial.append(pair_initial)
+
     _formset = CompareFormSet(initial=formset_initial, prefix='compare')
 
     if request.method == "POST":
-        print(_formset.is_valid())
-        if _formset.is_valid():
-            for form in _formset:
+        new_formset = CompareFormSet(request.POST, initial=formset_initial, prefix='compare')
+        if new_formset.is_valid():
+            for form in new_formset:
                 if form.is_valid():
-                    try:
-                        PairCompare.objects.update_or_create(first_alternative=form.first_alternative,
-                                                             second_alternative=form.second_alternative,
-                                                             lpr=obj_lpr,
-                                                             result=form.cleaned_data.compare)
-                    except DatabaseError:
-                        messages.error(request, "Database error. Please try again")
+                    if form.cleaned_data.get('compare'):
+                        pair_object, created = PairCompare.objects.get_or_create(
+                            first_alternative=form.first_alternative,
+                            second_alternative=form.second_alternative,
+                            lpr=obj_lpr)
+                        pair_object.result = form.cleaned_data['compare']
+                        pair_object.save()
 
-            return redirect('alternative-list')
+            return redirect('lpr-list')
 
     return render(request, 'incidence/decisions/alt_compare.html', {
-        "_form": form,
         'formset': _formset,
         "alternatives": alternatives,
         "lpr": LPR.objects.get(id=pk_lpr)
